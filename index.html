@@ -5,7 +5,7 @@
 		<title>UFO Wallet by Coinb.in</title>
 
 		<meta http-equiv="content-type" content="text/html;charset=utf-8" />
-		<meta name="keywords" content="UFO, bitcoin, wallet, multisig, multisignature, address, browser, segwit, javascript, js, transaction, verify, decode" />
+		<meta name="keywords" content="UFO, bitcoin, wallet, multisig, multisignature, address, browser, javascript, js, transaction, verify, decode" />
 		<meta name="description" content="A UFO Wallet written in Javascript. Supports Multisig, Custom Transactions, nLockTime and more!" />
 
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -123,7 +123,7 @@
 
 							<div class="col-md-4">
 								<h3><span class="glyphicon glyphicon-globe"></span> Addresses</h3>
-								<p>We support <a href="#newAddress">regular addresses</a>, <a href="#newMultiSig">multisig</a>, <a href="#newSegWit">segwit</a> and stealth all with access to your own private keys!</p>
+								<p>We support <a href="#newAddress">regular addresses</a>, <a href="#newMultiSig">multisig</a> and stealth all with access to your own private keys!</p>
 							</div>
 
 							<div class="col-md-4">
@@ -151,21 +151,6 @@
 										<input id="openPassConfirm" type="password" class="form-control" placeholder="Password confirm" required>
 										<br>
 
-										<div>
-											<a href="javascript:;" class="optionsCollapse"><div class="well well-sm"><span class="glyphicon glyphicon-collapse-down" id="glyphcollapse"></span> Advanced Options</div></a>
-											<div class="hidden optionsAdvanced">
-												<label>Segregated Witness Address</label>
-												<p class="checkbox">
-													<label><input type="checkbox" id="walletSegwit" class="checkbox-inline" checked> Use a segwit address instead of a regular address. <span class="text-muted"><i>(recommended)</i></span></label></label>
-												</p>
-
-												<label>Enable Replace by Fee (RBF)</label>
-												<p class="checkbox">
-													<label><input type="checkbox" id="walletRBF" class="checkbox-inline" checked> Enable RBF on all transactions, allowing you to manually raise the transaction fee later if required. <span class="text-muted"><i>(recommended)</i></span></label></label>
-												</p>
-											</div>
-										</div>
-
 										<div id="openLoginStatus" class="alert alert-danger hidden"></div>
 										<button id="openBtn" class="btn btn-primary" type="submit">Submit</button>
 									</form>
@@ -184,8 +169,7 @@
 
 												<div class="btn-group">
 													<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" id="walletToBtn">SegWit <span class="caret"></span></button>
-													<ul class="dropdown-menu">
-														<li><a href="javascript:;" id="walletToSegWit">SegWit</a></li>
+													<ul class="dropdown-menu" style="display: none;">
 														<li><a href="javascript:;" id="walletToLegacy">Legacy</a></li>
 													</ul>
 												</div>
@@ -204,11 +188,6 @@
 												<div id="walletKeys" class="hidden">
 													<label>Public Key</label>
 													<input class="form-control pubkey" type="text" readonly>
-
-													<div class="walletSegWitRS hidden">
-														<label>Redeem Script <i>(SegWit)</i></label>
-														<input class="form-control" type="text" readonly>
-													</div>
 
 													<label>Private key</label>
 													<div class="input-group">
@@ -333,47 +312,6 @@
 						</div>
 
 						<input type="button" class="btn btn-primary" value="Generate" id="newKeysBtn">
-						<br>
-					</div>
-
-					<div class="tab-pane tab-content" id="newSegWit">
-						<h2>New SegWit Address <small> Smaller &amp; Faster Transactions</small></h2>
-
-						<p>Any keys used you will need to manually store safely as they will be needed later to redeem the UFO.</p>
-
-						<label>SegWit Address (Share)</label>
-
-						<div class="input-group">
-							<input id="newSegWitAddress" type="text" class="form-control address" value="" readonly>
-							<span class="input-group-btn">
-								<button class="qrcodeBtn btn btn-default" type="button" data-toggle="modal" data-target="#modalQrcode"><span class="glyphicon glyphicon-qrcode"></span></button>
-							</span>
-						</div>
-
-						<label>RedeemScript</label>
-						<input id="newSegWitRedeemScript" type="text" class="form-control" readonly>
-
-						<label>Public key</label>
-						<input id="newSegWitPubKey" type="text" class="form-control" readonly>
-
-						<label>Private key (WIF key)</label>
-						<div class="input-group">
-							<input id="newSegWitPrivKey" type="password" class="form-control" value="" readonly>
-							<span class="input-group-btn">
-								<button class="showKey btn btn-default" type="button">Show</button>
-							</span>
-						</div>
-
-
-						<h3>Address Options</h3>
-						<p>You can use the advanced options below to generate different kind of keys and addresses.</p>
-
-						<div class="checkbox">
-							<label><input type="checkbox" id="newSegWitBrainwallet" class="checkbox-inline"> Custom Seed or Brain Wallet</label>
-							<input type="text" class="form-control hidden" id="brainwalletSegWit">
-						</div>
-
-						<input type="button" class="btn btn-primary" value="Generate" id="newSegWitKeysBtn">
 						<br>
 					</div>
 
@@ -610,14 +548,6 @@
 								<input type="text" class="form-control" value="0" id="nLockTime">
 
 								<hr>
-
-
-								<label>Replace By Fee (RBF)</label>
-								<p class="checkbox">
-									<label><input type="checkbox" id="txRBF" class="checkbox-inline"> Make this a <a href="https://en.bitcoin.it/wiki/Transaction_replacement" target="_blank">RBF transaction</a>.</label>
-								</p>
-
-								<hr>
 							</div>
 						</div>
 
@@ -765,18 +695,6 @@
 									<span class="input-group-btn"><button class="btn sliderbtn up" type="button"><span class="glyphicon glyphicon-chevron-right"></span></button></span>
 								</div>
 
-								<h4 class="segwit"><abbr title="Spending from a segwit address. p2sh">SegWit</abbr> 
-									<span class="badge inputno" title="Number of SegWit Inputs">0</span>
-									<small><span class="bytes">0</span> bytes</small>
-									<small class="estimate hidden"><em> *estimate</em></small>
-								</h4> 
-
-								<div class="input-group">
-									<span class="input-group-btn"><button class="btn sliderbtn down" type="button"><span class="glyphicon glyphicon-chevron-left"></span></button></span>
-									<input type="range" min="0" max="100" value="0" class="slider txinput txi_segwit" rel="segwit">
-									<span class="input-group-btn"><button class="btn sliderbtn up" type="button"><span class="glyphicon glyphicon-chevron-right"></span></button></span>
-								</div>
-
 								<h4 class="multisig"><abbr title="Spending from a multisig address. p2sh">MultiSig</abbr>  
 									<span class="badge inputno" title="Number of MultiSig Inputs">0</span>
 									<small><span class="bytes">0</span> bytes</small>
@@ -836,7 +754,7 @@
 									<span class="input-group-btn"><button class="btn sliderbtn up" type="button"><span class="glyphicon glyphicon-chevron-right"></span></button></span>
 								</div>
 
-								<h4 class="p2sh"><abbr title="A pay 2 script hash address. Starts with a 3. For example a segwit or multisig address">Regular</abbr> <small>p2sh (3...)</small> 
+								<h4 class="p2sh"><abbr title="A pay 2 script hash address. Starts with a 3. For example a multisig address">Regular</abbr> <small>p2sh (3...)</small> 
 									<span class="badge outputno" title="Number of p2sh Outputs">0</span> 
 									<small><span class="bytes">0</span> bytes</small>
 									<small class="estimate hidden"><em> *estimate</em></small>
@@ -907,10 +825,6 @@
 										<input type="number" class="form-control" id="est_txi_regular" value="107">
 									</div>
 									<div class="form-group">
-										<label for="est_txi_segwit">SegWit</label>
-										<input type="number" class="form-control" id="est_txi_segwit" value="27">
-									</div>
-									<div class="form-group">
 										<label for="est_txi_multisig">MultiSig</label>
 										<input type="number" class="form-control" id="est_txi_multisig" value="351">
 									</div>
@@ -977,21 +891,6 @@
 								<br>
 							</div>
 	
-							<div class="hidden verifyData" id="verifyRsDataSegWit">
-				                               	<label>Segwit Address</label>
-   								<div class="row">
-   									<div class="col-lg-6">
-    										<div class="input-group">
-    											<input type="text" class="form-control address segWitAddress" value="" readonly>
-    											<span class="input-group-btn">
-    												<button class="qrcodeBtn btn btn-default" type="button" data-toggle="modal" data-target="#modalQrcode"><span class="glyphicon glyphicon-qrcode"></span></button>
-    											</span>
-    										</div>
-									</div>
-								</div>
-								<br>
-							</div>
-
 							<div class="hidden verifyData" id="verifyRsDataHodl">
 								<label>Hodl Address</label>
 								<div class="row">
@@ -1034,8 +933,6 @@
 							<div><b>Version</b>: <span class="transactionVersion"></span></div>
 							<div><b>Transaction Size</b>: <span class="transactionSize"></span></div>
 							<div><b>Lock time</b>: <span class="transactionLockTime"></span></div>
-							<div class="transactionSegWit"><b>SegWit</b>: True</div>
-							<div class="transactionRBF"><b>RBF</b>: This is a <a href="https://en.bitcoin.it/wiki/Transaction_replacement">replace by fee</a> transaction!</div>
 
 							<hr>
 
@@ -1076,20 +973,8 @@
 						<div class="hidden verifyData" id="verifyPubKey">
 							<h4>Public key</h4>
 							<p><span style="float:right"><a href="" target="_blank" class="verifyLink" title="Link to this page"><span class="glyphicon glyphicon-link"></span></a></span>The above public key has been encoded to its address</p>
-							<p><b>Legacy Address</b>: <input type="text" class="form-control address" readonly></p>
+							<p><b>Address</b>: <input type="text" class="form-control address" readonly></p>
 
-							<div class="hidden verifyDataSw">
-								<hr>
-								<div class="row">
-									<div class="col-md-6">
-										<p><b>Segwit Address</b>: <input type="text" class="form-control addressSegWit" readonly></p>
-									</div>
-
-									<div class="col-md-6">
-										<p><b>Segwit Redeem Script</b>: <input type="text" class="form-control addressSegWitRedeemScript" readonly></p>
-									</div>
-								</div>
-							</div>
 						</div>
 
 						<div class="hidden verifyData" id="verifyHDaddress">

@@ -975,7 +975,7 @@ $(document).ready(function() {
 						if(tx.match(/^[a-f0-9]+$/)){
 							var n = o.tx_ouput_n;
 							var script = (redeem.isMultisig==true) ? $("#redeemFrom").val() : o.script;
-							var amount = o.value;
+							var amount = (o.value/100000000).toFixed(8);
 							addOutput(tx, n, script, amount);
 						}
 					}

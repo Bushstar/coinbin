@@ -277,11 +277,6 @@
 		}
 	}
 
-	/* retreive the balance from a given address */
-	coinjs.addressBalance = function(address, callback){
-		coinjs.ajax(coinjs.host+'?uid='+coinjs.uid+'&key='+coinjs.key+'&setmodule=addresses&request=bal&address='+address+'&r='+Math.random(), callback, "GET");
-	}
-
 	/* decompress an compressed public key */
 	coinjs.pubkeydecompress = function(pubkey) {
 		if((typeof(pubkey) == 'string') && pubkey.match(/^[a-f0-9]+$/i)){

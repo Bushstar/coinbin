@@ -241,18 +241,24 @@ $(document).ready(function() {
 		});
 	});
 
-	function walletBalance(){
-		var tx = coinjs.transaction();
+	function walletBalance() {
 		$("#walletLoader").removeClass("hidden");
-		coinjs.addressBalance($("#walletAddress").html(),function(data){
-			if($(data).find("result").text()==1){
-				var v = $(data).find("balance").text()/100000000;
-				$("#walletBalance").html(v+" UFO").attr('rel',v).fadeOut().fadeIn();
-			} else {
-				$("#walletBalance").html("0.00 UFO").attr('rel',v).fadeOut().fadeIn();
+        var address = $("#walletAddress").html();
+		$.ajax ({
+			type: "GET",
+			url: "/proxyAjax.php?https%3A%2F%2Fchainz.cryptoid.info%2Fufo%2Fapi.dws?q=getbalance&a="+address+"&key=a22e5578a2dc",
+			dataType: "text/html",
+			error: function() {},
+			success: function(data) {
+				if (data){
+					$("#walletBalance").html(data+" UFO").attr('rel',data).fadeOut().fadeIn();
+				} else {
+                    $("#walletBalance").html("0.00 UFO").attr('rel',data).fadeOut().fadeIn();
+                }
+			},
+			complete: function(data, status) {
+				$("#walletLoader").addClass("hidden");
 			}
-
-			$("#walletLoader").addClass("hidden");
 		});
 	}
 

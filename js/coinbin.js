@@ -246,7 +246,7 @@ $(document).ready(function() {
         var address = $("#walletAddress").html();
 		$.ajax ({
 			type: "GET",
-			url: "/proxyAjax.php?https%3A%2F%2Fchainz.cryptoid.info%2Fufo%2Fapi.dws?q=getbalance&a="+address+"&key=a22e5578a2dc",
+			url: "/proxyAjax.php?url=https%3A%2F%2Fchainz.cryptoid.info%2Fufo%2Fapi.dws%3Fq%3Dgetbalance%26a%3D"+address+"%26key%3Da22e5578a2dc",
 			dataType: "text/html",
 			error: function() {},
 			success: function(data) {

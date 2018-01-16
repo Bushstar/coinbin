@@ -85,12 +85,6 @@ $(document).ready(function() {
 		$("#openLoginStatus").html("").hide();
 	});
 
-	$("#walletToLegacy").click(function(){
-		$("#walletToBtn").html('Legacy <span class="caret"></span>');
-		$("#openBtn").click();
-	});
-
-
 	$("#walletShowKeys").click(function(){
 		$("#walletKeys").removeClass("hidden");
 		$("#walletSpend").removeClass("hidden").addClass("hidden");

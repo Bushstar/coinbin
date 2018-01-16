@@ -247,17 +247,15 @@ $(document).ready(function() {
 		$.ajax ({
 			type: "GET",
 			url: "/proxyAjax.php?url=https%3A%2F%2Fchainz.cryptoid.info%2Fufo%2Fapi.dws%3Fq%3Dgetbalance%26a%3D"+address+"%26key%3Da22e5578a2dc",
-			dataType: "text/html",
+			dataType: "json",
 			error: function() {},
-			success: function(data) {
-				if (data){
-					$("#walletBalance").html(data+" UFO").attr('rel',data).fadeOut().fadeIn();
-				} else {
-                    $("#walletBalance").html("0.00 UFO").attr('rel',data).fadeOut().fadeIn();
-                }
-			},
 			complete: function(data, status) {
+                if (!isNaN(data.responseText))
+                    $("#walletBalance").html(data.responseText+" UFO"); 
+                else
+                    $("#walletBalance").html("0.00 UFO"); 
 				$("#walletLoader").addClass("hidden");
+                console.log(data);
 			}
 		});
 	}

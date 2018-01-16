@@ -3,7 +3,7 @@ $(document).ready(function() {
 	/* open wallet code */
 
 	var explorer_tx = "https://coinb.in/tx/"
-	var explorer_addr = "https://coinb.in/addr/"
+	var explorer_addr = "https://chainz.cryptoid.info/ufo/address.dws?"
 	var explorer_block = "https://coinb.in/block/"
 
 	var wallet_timer = false;
@@ -36,7 +36,7 @@ $(document).ready(function() {
 					var privkeyaes = CryptoJS.AES.encrypt(keys.wif, pass);
 
 					$("#walletAddress").html(address);
-					$("#walletHistory").attr('href',explorer_addr+address);
+					$("#walletHistory").attr('href',explorer_addr+address+".htm");
 
 					$("#walletQrCode").html("");
 					var qrcode = new QRCode("walletQrCode");

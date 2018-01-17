@@ -246,7 +246,7 @@ $(document).ready(function() {
         var address = $("#walletAddress").html();
 		$.ajax ({
 			type: "GET",
-			url: "/proxyAjax.php?url=https%3A%2F%2Fchainz.cryptoid.info%2Fufo%2Fapi.dws%3Fq%3Dgetbalance%26a%3D"+address+"%26key%3Da22e5578a2dc",
+			url: "/proxyAjax.php?url=https%3A%2F%2Fchainz.cryptoid.info%2Fufo%2Fapi.dws%3Fq%3Dgetbalance%26a%3D"+address,
 			dataType: "json",
 			error: function() {},
 			complete: function(data, status) {
@@ -957,7 +957,7 @@ $(document).ready(function() {
 		
 		$.ajax ({
 			type: "GET",
-			url: "https://chainz.cryptoid.info/ufo/api.dws?q=unspent&active="+redeem.addr+"&key=a22e5578a2dc",
+			url: "/proxyAjax.php?url=https%3A%2F%2Fchainz.cryptoid.info%2Fufo%2Fapi.dws%3Fq%3Dunspent%26active%3D"+redeem.addr,
 			dataType: "json",
 			error: function() {
 				$("#redeemFromStatus").removeClass('hidden').html('<span class="glyphicon glyphicon-exclamation-sign"></span> Unable to retrieve unspent outputs!');

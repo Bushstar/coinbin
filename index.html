@@ -70,6 +70,7 @@
 							</li>
 							<li><a href="#verify" data-toggle="tab"><span class="glyphicon glyphicon-ok"></span> Verify</a></li>
 							<li><a href="#sign" data-toggle="tab"><span class="glyphicon glyphicon-pencil"></span> Sign</a></li>
+							<li><a href="#broadcast" data-toggle="tab"><span class="glyphicon glyphicon-globe"></span> Broadcast</a></li>
 							<li><a href="#wallet" data-toggle="tab"><span class="glyphicon glyphicon-briefcase"></span> Wallet</a></li>
 							<li><a href="#about" data-toggle="tab"><span class="glyphicon glyphicon-info-sign"></span> About</a></li>
 
@@ -107,7 +108,7 @@
 
 							<div class="col-md-4">
 								<h3><span class="glyphicon glyphicon-bitcoin"></span> Raw Transactions</h3>
-								<p><a href="#newTransaction">Create</a>, <a href="#verify">verify</a> and <a href="#sign">sign</a> custom raw transactions online with advanced features and minimal effort!</p>
+								<p><a href="#newTransaction">Create</a>, <a href="#verify">verify</a>, <a href="#sign">sign</a> and <a href="#broadcast">broadcast</a> custom raw transactions online with advanced features and minimal effort!</p>
 							</div>
 						</div>
 
@@ -1063,7 +1064,7 @@
 
 					<div class="tab-pane tab-content" id="sign">
 						<h2>Sign Transaction <small>once a transaction has been verified</small></h2>
-						<p>Once you have <a href="#verify">verified</a> a transaction you can sign and then broadcast it to the network using the desktop client sendrawtransaction command.</p>
+						<p>Once you have <a href="#verify">verified</a> a transaction you can sign and then <a href="#broadcast">broadcast</a> it into the network.</p>
 
 						<div class="row">
 							<div class="col-md-12">
@@ -1128,6 +1129,18 @@
 						</div>
 
 						<input type="button" value="Submit" class="btn btn-primary" id="signBtn">
+						<br>
+					</div>
+
+					<div class="tab-pane tab-content" id="broadcast">
+						<h2>Broadcast Transaction <small>into the UFO network</small></h2>
+						<a href="#settings" style="float:right;"><span class="glyphicon glyphicon-cog"></span></a>
+						<p>Enter your hex encoded UFO transaction</p>
+						<textarea class="form-control" style="height:125px" id="rawTransaction"></textarea>
+						<br>
+						<div id="rawTransactionStatus" class="alert hidden">
+						</div>
+						<input type="button" value="Submit" id="rawSubmitBtn" class="btn btn-primary">
 						<br>
 					</div>
 

@@ -23,7 +23,7 @@
 	/* bit(coinb.in) api vars */
 	coinjs.host = ('https:'==document.location.protocol?'https://':'http://')+'coinb.in/api/';
 	coinjs.uid = '1';
-	coinjs.key = '12345678901234567890123456789012';
+	coinjs.key = '32098462904584238923572';
 
 	/* start of address functions */
 

@@ -1088,22 +1088,19 @@ $(document).ready(function() {
 		$(thisbtn).val('Please wait, loading...').attr('disabled',true);
 		$.ajax ({
 			type: "POST",
-			url: coinjs.host+'?uid='+coinjs.uid+'&key='+coinjs.key+'&setmodule=bitcoin&request=sendrawtransaction',
+			url: '/proxyAjax.php?module=sendrawtransaction&key='+coinjs.key,
 			data: {'rawtx':$("#rawTransaction").val()},
-			dataType: "xml",
+			dataType: "json",
 			error: function(data) {
 				$("#rawTransactionStatus").addClass('alert-danger').removeClass('alert-success').removeClass("hidden").html(" There was an error submitting your request, please try again").prepend('<span class="glyphicon glyphicon-exclamation-sign"></span>');
 			},
-                        success: function(data) {
-				$("#rawTransactionStatus").html(unescape($(data).find("response").text()).replace(/\+/g,' ')).removeClass('hidden');
-				if($(data).find("result").text()==1){
-					$("#rawTransactionStatus").addClass('alert-success').removeClass('alert-danger');
-					$("#rawTransactionStatus").html('txid: '+$(data).find("txid").text());
-				} else {
-					$("#rawTransactionStatus").addClass('alert-danger').removeClass('alert-success').prepend('<span class="glyphicon glyphicon-exclamation-sign"></span> ');
-				}
-			},
 			complete: function(data, status) {
+                var resp = data.responseText;
+
+                if (resp.toLowerCase().indexOf("fatal error") < 0) {
+                    $("#rawTransactionStatus").addClass('alert-success').removeClass('alert-danger');
+                    $("#rawTransactionStatus").html('txid: '+resp);
+                }
 				$("#rawTransactionStatus").fadeOut().fadeIn();
 				$(thisbtn).val('Submit').attr('disabled',false);				
 			}

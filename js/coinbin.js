@@ -1083,26 +1083,27 @@ $(document).ready(function() {
 	});
 
 	// broadcast transaction vai coinbin (default)
-	function rawSubmitDefault(btn){ 
-		var thisbtn = btn;		
+	function rawSubmitDefault(btn){
+		var thisbtn = btn;
 		$(thisbtn).val('Please wait, loading...').attr('disabled',true);
 		$.ajax ({
 			type: "POST",
-			url: '/proxyAjax.php?module=sendrawtransaction&key='+coinjs.key,
+            url: 'https://wallet.ufocoin.net/proxyAjax.php?module=sendrawtransaction&key='+coinjs.key,
 			data: {'rawtx':$("#rawTransaction").val()},
 			dataType: "json",
 			error: function(data) {
 				$("#rawTransactionStatus").addClass('alert-danger').removeClass('alert-success').removeClass("hidden").html(" There was an error submitting your request, please try again").prepend('<span class="glyphicon glyphicon-exclamation-sign"></span>');
 			},
 			complete: function(data, status) {
-                var resp = data.responseText;
-
-                if (resp.toLowerCase().indexOf("fatal error") < 0) {
-                    $("#rawTransactionStatus").addClass('alert-success').removeClass('alert-danger');
-                    $("#rawTransactionStatus").html('txid: '+resp);
+                if ("responseText" in data) {
+                    var resp = data.responseText;
+                    if (resp.toLowerCase().indexOf("fatal error") < 0 && data.responseText != 0) {
+                        $("#rawTransactionStatus").addClass('alert-success').removeClass('alert-danger');
+                        $("#rawTransactionStatus").html('txid: '+resp);
+                    }
                 }
 				$("#rawTransactionStatus").fadeOut().fadeIn();
-				$(thisbtn).val('Submit').attr('disabled',false);				
+				$(thisbtn).val('Submit').attr('disabled',false);
 			}
 		});
 	}

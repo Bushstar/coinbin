@@ -75,7 +75,6 @@
 							<li><a href="#about" data-toggle="tab"><span class="glyphicon glyphicon-info-sign"></span> About</a></li>
 
 							<li class="hidden"><a href="#settings" data-toggle="tab"><span class="glyphicon glyphicon-cog"></span> Settings</a></li>
-							<li class="hidden"><a href="#fees" data-toggle="tab"><span class="glyphicon glyphicon-tag"></span> Fees</a></li>
 						</ul>
 					</div>
 				</div>
@@ -115,7 +114,7 @@
 						<div class="row">
 							<div class="col-md-4">
 								<h3><span class="glyphicon glyphicon-piggy-bank"></span> Wallet</h3>
-								<p>Quick access to an <a href="#wallet">online wallet</a> where only you have access to your own private keys &amp; can <a href="#fees">calculate your own fee</a>!</p>
+								<p>Quick access to an <a href="#wallet">online wallet</a> where only you have access to your own private keys.</p>
 							</div>
 
 							<div class="col-md-4">
@@ -168,6 +167,7 @@
 											<div style="text-align:center; width:350px;">
 												<ul class="nav nav-pills" role="tablist">
 													<li role="presentation" class="active"><a href="javascript:;" id="walletBalance">0.00 UFO</a></li>
+													<li role="presentation"><a href="javascript:;" id="walletShowSpend">Spend</a></li>
 													<li role="presentation"><a id="walletHistory" href="javascript:;" target="_blank">History</a></li>
 													<li role="presentation"><a href="javascript:;" id="walletShowKeys">Keys</a></li>
 												</ul>
@@ -220,12 +220,12 @@
 													</div>
 													<div class="row">
 														<div class="col-xs-6">
-															<label><abbr title="the amount to pay in network miner fee">Transaction Fee</abbr>&nbsp;&nbsp;<a href="javascript:;" id="feesestwallet"><span class="glyphicon glyphicon-question-sign"></span></a></label>
-															<input type="text" class="form-control" value="0.0004" id="txFee">
+															<label><abbr title="the amount to pay in network miner fee">Transaction Fee</abbr></label>
+															<input type="text" class="form-control" value="0.0001" id="txFee">
 														</div>
 														<div class="col-xs-5">
 															<label><abbr title="the amount to donate to coinb.in">Donation</abbr></label>
-															<input type="text" class="form-control" value="0.003" id="developerDonation">
+															<input type="text" class="form-control" value="1" id="developerDonation">
 														</div>
 													</div>
 													<br>

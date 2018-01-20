@@ -138,9 +138,13 @@ $(document).ready(function() {
 				tx2.broadcast(function(data){
 
 					if(data.result=="1"){
-						$("#walletSendConfirmStatus").removeClass('hidden').removeClass('alert-danger').addClass('alert-success').html('txid:'+data.txid+'</a>');
-						if(data.txid == '')
-							$("#walletSendConfirmStatus").html('Successfull transaction');
+						$("#walletSendConfirmStatus").removeClass('hidden').removeClass('alert-danger').addClass('alert-success').html('txid:'+(data.txid.replace('string(64)','').replace('"','').trim())+'</a>');
+						if( (data.txid == '') || (data.txid == '0') || (data.txid == 0) )
+						{
+							$("#walletSendConfirmStatus").removeClass('hidden').addClass('alert-danger').html("There is an error during transaction");
+							$("#walletSendFailTransaction").removeClass('hidden');
+							$("#walletSendFailTransaction textarea").val(signed);
+						}
 
 						$("#walletSendFailTransaction").addClass('hidden');
 						thisbtn.attr('disabled',true);

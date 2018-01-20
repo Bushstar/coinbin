@@ -98,14 +98,8 @@ $(document).ready(function() {
 		var thisbtn = $(this);
 		var tx = coinjs.transaction();
 		var txfee = $("#txFee");
-		var devaddr = coinjs.developer;
-		var devamount = $("#developerDonation");
 
-		if((devamount.val()*1)>0){
-			tx.addoutput(devaddr, devamount.val()*1);
-		}
-
-		var total = (devamount.val()*1) + (txfee.val()*1);
+		var total = (txfee.val()*1);
 
 		$.each($("#walletSpendTo .output"), function(i,o){
 			var addr = $('.addressTo',o);
@@ -178,13 +172,6 @@ $(document).ready(function() {
 
 		var thisbtn = $(this);
 		var txfee = $("#txFee");
-		var devamount = $("#developerDonation");
-
-		if((!isNaN(devamount.val())) && devamount.val()>=0){
-			$(devamount).parent().removeClass('has-error');
-		} else {
-			$(devamount).parent().addClass('has-error')
-		}
 
 		if((!isNaN(txfee.val())) && txfee.val()>=0){
 			$(txfee).parent().removeClass('has-error');
@@ -192,7 +179,7 @@ $(document).ready(function() {
 			$(txfee).parent().addClass('has-error');
 		}
 
-		var total = (devamount.val()*1) + (txfee.val()*1);
+		var total = (txfee.val()*1);
 
 		$.each($("#walletSpendTo .output"), function(i,o){
 			var amount = $('.amount',o);
@@ -650,17 +637,6 @@ $(document).ready(function() {
 				}
 			});
 
-			if(($("#developerDonation").val()*1)>0){
-				var addr = coinjs.developer;
-				var ad = coinjs.addressDecode(addr);
-				if (ad.version == coinjs.multisig){ // p2sh
-					$("#fees .txo_p2sh").val(($("#fees .txo_p2sh").val()*1)+1);
-					$("#fees .txo_p2sh").trigger('input');
-				} else { // p2pkh
-					$("#fees .txo_p2pkh").val(($("#fees .txo_p2pkh").val()*1)+1);
-					$("#fees .txo_p2pkh").trigger('input');					
-				}
-			}
 
 		});
 
@@ -684,20 +660,12 @@ $(document).ready(function() {
 
 		var exists = false;
 
-		$.each($("#recipients .address"), function(i,o){
-			if($(o).val() == coinjs.developer){
-				exists = true;
-				$(o).fadeOut().fadeIn();
-				return true;
-			}
-		});
-
 		if(!exists){
 			if($("#recipients .recipient:last .address:last").val() != ""){
 				$("#recipients .addressAddTo:first").click();
 			};
 
-			$("#recipients .recipient:last .address:last").val(coinjs.developer).fadeOut().fadeIn();
+			//$("#recipients .recipient:last .address:last").val(coinjs.developer).fadeOut().fadeIn();
 
 			return true;
 		}

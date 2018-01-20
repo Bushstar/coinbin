@@ -853,43 +853,33 @@
 
 		/* list unspent transactions */
 		r.listUnspent = function(address, callback) {
-			coinjs.ajax(coinjs.host+'?uid='+coinjs.uid+'&key='+coinjs.key+'&setmodule=addresses&request=unspent&address='+address+'&r='+Math.random(), callback, "GET");
+			coinjs.ajax("/proxyAjax.php?url=https%3A%2F%2Fchainz.cryptoid.info%2Fufo%2Fapi.dws%3Fq%3Dunspent%26active%3D"+address, callback, "GET");
 		}
 
 		/* add unspent to transaction */
 		r.addUnspent = function(address, callback, script, sequence){
 			var self = this;
 			this.listUnspent(address, function(data){
+
 				var s = coinjs.script();
 				var pubkeyScript = s.pubkeyHash(address);
 				var value = 0;
 				var total = 0;
 				var x = {};
 
-				if (window.DOMParser) {
-					parser=new DOMParser();
-					xmlDoc=parser.parseFromString(data,"text/xml");
-				} else {
-					xmlDoc=new ActiveXObject("Microsoft.XMLDOM");
-					xmlDoc.async=false;
-					xmlDoc.loadXML(data);
-				}
+				var unspent = JSON.parse(data).unspent_outputs;
 
-				var unspent = xmlDoc.getElementsByTagName("unspent")[0];
-
-				for(i=1;i<=unspent.childElementCount;i++){
-					var u = xmlDoc.getElementsByTagName("unspent_"+i)[0]
-					var txhash = (u.getElementsByTagName("tx_hash")[0].childNodes[0].nodeValue).match(/.{1,2}/g).reverse().join("")+'';
-					var n = u.getElementsByTagName("tx_output_n")[0].childNodes[0].nodeValue;
-					var scr = script || u.getElementsByTagName("script")[0].childNodes[0].nodeValue;
-
-					var seq = sequence || false;
+				for(i=0;i<=unspent.length-1;i++){
+					var txhash = unspent[i].tx_hash,
+						n = unspent[i].tx_ouput_n,
+						scr = unspent[i].script,
+						seq = sequence || false;
 					self.addinput(txhash, n, scr, seq);
-					value += u.getElementsByTagName("value")[0].childNodes[0].nodeValue*1;
+					value += unspent[i].value;
 					total++;
 				}
 
-				x.unspent = $(xmlDoc).find("unspent");
+				x.unspent = unspent;
 				x.value = value;
 				x.total = total;
 				return callback(x);
@@ -909,7 +899,18 @@
 		/* broadcast a transaction */
 		r.broadcast = function(callback, txhex){
 			var tx = txhex || this.serialize();
-			coinjs.ajax(coinjs.host+'?uid='+coinjs.uid+'&key='+coinjs.key+'&setmodule=bitcoin&request=sendrawtransaction&rawtx='+tx+'&r='+Math.random(), callback, "GET");
+			$.ajax ({
+				type: "POST",
+	            url: 'https://wallet.ufocoin.net/proxyAjax.php?module=sendrawtransaction&key='+coinjs.key,
+				data: {'rawtx':tx},
+				dataType: "text",
+				error: function(data) {
+					callback({'result': "0", 'error': data.statusText});
+				},
+				complete: function(data, status) {
+					callback({'result': "1", 'txid': data.responseText});
+				}
+			});			
 		}
 
 		/* generate the transaction hash to sign from a transaction input */

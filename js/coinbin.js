@@ -142,10 +142,16 @@ $(document).ready(function() {
 
 				// and finally broadcast!
 				tx2.broadcast(function(data){
-					if($(data).find("result").text()=="1"){
-						$("#walletSendConfirmStatus").removeClass('hidden').addClass('alert-success').html('txid: <a href="https://coinb.in/tx/'+$(data).find("txid").text()+'" target="_blank">'+$(data).find("txid").text()+'</a>');
+
+					if(data.result=="1"){
+						$("#walletSendConfirmStatus").removeClass('hidden').removeClass('alert-danger').addClass('alert-success').html('txid:'+data.txid+'</a>');
+						if(data.txid == '')
+							$("#walletSendConfirmStatus").html('Successfull transaction');
+
+						$("#walletSendFailTransaction").addClass('hidden');
+						thisbtn.attr('disabled',true);
 					} else {
-						$("#walletSendConfirmStatus").removeClass('hidden').addClass('alert-danger').html(unescape($(data).find("response").text()).replace(/\+/g,' '));
+						$("#walletSendConfirmStatus").removeClass('hidden').addClass('alert-danger').html("There is an error during transaction");
 						$("#walletSendFailTransaction").removeClass('hidden');
 						$("#walletSendFailTransaction textarea").val(signed);
 						thisbtn.attr('disabled',false);

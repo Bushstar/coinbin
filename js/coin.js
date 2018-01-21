@@ -875,7 +875,7 @@
 						scr = unspent[i].script,
 						seq = sequence || false;
 					self.addinput(txhash, n, scr, seq);
-					value += unspent[i].value;
+					value += parseInt(unspent[i].value);
 					total++;
 				}
 

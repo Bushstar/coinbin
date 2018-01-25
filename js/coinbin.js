@@ -95,6 +95,10 @@ $(document).ready(function() {
 	});
 
 	$("#walletConfirmSend").click(function(){
+
+		$("#walletSendConfirmStatus").removeClass('hidden').addClass('alert-info').html("Transaction is submitting. Please wait");		
+		$("#sendBtnLoader").removeClass("hidden");
+
 		var thisbtn = $(this);
 		var tx = coinjs.transaction();
 		var txfee = $("#txFee");
@@ -136,7 +140,9 @@ $(document).ready(function() {
 
 				// and finally broadcast!
 				tx2.broadcast(function(data){
-
+					
+					$("#sendBtnLoader").addClass("hidden");
+					
 					if(data.result=="1"){
 						$("#walletSendConfirmStatus").removeClass('hidden').removeClass('alert-danger').addClass('alert-success').html('txid:'+(data.txid.replace('string(64)','').replace('"','').trim())+'</a>');
 						if( (data.txid == '') || (data.txid == '0') || (data.txid == 0) )
@@ -173,6 +179,9 @@ $(document).ready(function() {
 
 		$("#walletSendFailTransaction").addClass('hidden');
 		$("#walletSendStatus").addClass("hidden").html("");
+
+		$("#sendBtnLoader").removeClass('hidden');
+		$("#walletConfirmSend").attr('disabled',true);
 
 		var thisbtn = $(this);
 		var txfee = $("#txFee");
@@ -212,7 +221,7 @@ $(document).ready(function() {
 				$("#walletSendConfirmStatus").addClass("hidden").removeClass('alert-success').removeClass('alert-danger').html("");
 				$("#spendAmount").html(total);
 				$("#modalWalletConfirm").modal("show");
-				$("#walletConfirmSend").attr('disabled',false);
+				setTimeout('$("#walletConfirmSend").attr("disabled",false); $("#sendBtnLoader").addClass("hidden");', 2000);				
 			} else {
 				$("#walletSendStatus").removeClass("hidden").html("You are trying to spend "+total+' but have a balance of '+balance);
 			}

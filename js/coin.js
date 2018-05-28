@@ -12,7 +12,7 @@
 	/* public vars */
 	coinjs.pub = 0x1b;
 	coinjs.priv = 0x9b;
-	coinjs.multisig = 0x05;
+	coinjs.multisig = 0x44;
 	coinjs.hdkey = {'prv':0x0488ade4, 'pub':0x0488b21e};
 
 	coinjs.compressed = false;

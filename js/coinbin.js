@@ -35,6 +35,15 @@ $(document).ready(function() {
 					var pubkey = keys.pubkey;
 					var privkeyaes = CryptoJS.AES.encrypt(keys.wif, pass);
 
+					$("#walletKeys .walletSegWitRS").addClass("hidden");
+					if($("#walletSegwit").is(":checked")){
+						var sw = coinjs.segwitAddress(pubkey);
+						address = sw.address;
+
+						$("#walletKeys .walletSegWitRS").removeClass("hidden");
+						$("#walletKeys .walletSegWitRS input:text").val(sw.redeemscript);						
+					}
+
 					$("#walletAddress").html(address);
 					$("#walletHistory").attr('href',explorer_addr+address+".htm");
 
@@ -85,6 +94,18 @@ $(document).ready(function() {
 		$("#openLoginStatus").html("").hide();
 	});
 
+	$("#walletToSegWit").click(function(){
+		$("#walletToBtn").html('SegWit <span class="caret"></span>');
+		$("#walletSegwit")[0].checked = true;
+		$("#openBtn").click();
+	});
+
+	$("#walletToLegacy").click(function(){
+		$("#walletToBtn").html('Legacy <span class="caret"></span>');
+		$("#walletSegwit")[0].checked = false;
+		$("#openBtn").click();
+	});
+
 	$("#walletShowKeys").click(function(){
 		$("#walletKeys").removeClass("hidden");
 		$("#walletSpend").removeClass("hidden").addClass("hidden");
@@ -117,8 +138,15 @@ $(document).ready(function() {
 		thisbtn.attr('disabled',true);
 
 		var script = false;
+		if($("#walletSegwit").is(":checked")){
+			var sw = coinjs.segwitAddress($("#walletKeys .pubkey").val());
+			script = sw.redeemscript;
+		}
 
 		var sequence = false;
+		if($("#walletRBF").is(":checked")){
+			sequence = 0xffffffff-2;
+		}
 
 		tx.addUnspent($("#walletAddress").html(), function(data){
 
@@ -310,6 +338,14 @@ $(document).ready(function() {
 		}
 	});
 
+	$("#newSegWitBrainwallet").click(function(){
+		if($(this).is(":checked")){
+			$("#brainwalletSegWit").removeClass("hidden");
+		} else {
+			$("#brainwalletSegWit").addClass("hidden");
+		}
+	});
+
 	$("#encryptKey").click(function(){
 		if($(this).is(":checked")){
 			$("#aes256passform").removeClass("hidden");
@@ -317,6 +353,21 @@ $(document).ready(function() {
 			$("#aes256wifkey, #aes256passform, #aes256passStatus").addClass("hidden");
 		}
 	});
+
+	/* new -> segwit code */
+	$("#newSegWitKeysBtn").click(function(){
+		var compressed = coinjs.compressed;
+		coinjs.compressed = true;
+		var s = ($("#newSegWitBrainwallet").is(":checked")) ? $("#brainwalletSegWit").val() : null;
+		var coin = coinjs.newKeys(s);
+		var sw = coinjs.segwitAddress(coin.pubkey);
+		$("#newSegWitAddress").val(sw.address);
+		$("#newSegWitRedeemScript").val(sw.redeemscript);
+		$("#newSegWitPubKey").val(coin.pubkey);
+		$("#newSegWitPrivKey").val(coin.wif);
+		coinjs.compressed = compressed;
+	});
+
 
 	/* new -> multisig code */
 
@@ -551,6 +602,9 @@ $(document).ready(function() {
 
 			if(!$(o).hasClass("has-error")){
 				var seq = null;
+				if($("#txRBF").is(":checked")){
+					seq = 0xffffffff-2;
+				}
 
 				var currentScript = $(".txIdScript",o).val();
 				if (currentScript.match(/^76a914[0-9a-f]{40}88ac$/)) {
@@ -635,8 +689,13 @@ $(document).ready(function() {
 		var tx = coinjs.transaction();
 		tx.listUnspent($("#walletAddress").html(), function(data){
 			var inputs = $(data).find("unspent").children().length;
-			$("#fees .txi_regular").val(inputs);
-			$("#fees .txi_regular").trigger('input');
+			if($("#walletSegwit").is(":checked")){	
+				$("#fees .txi_segwit").val(inputs);
+				$("#fees .txi_segwit").trigger('input');
+			} else {
+				$("#fees .txi_regular").val(inputs);
+				$("#fees .txi_regular").trigger('input');
+			}
 
 			$.each($("#walletSpendTo .output"), function(i,o){
 				var addr = $('.addressTo',o);
@@ -1239,6 +1298,7 @@ $(document).ready(function() {
 		if(decode){
 			$("#verifyRsDataMultisig").addClass('hidden');
 			$("#verifyRsDataHodl").addClass('hidden');
+			$("#verifyRsDataSegWit").addClass('hidden');
 			$("#verifyRsData").addClass("hidden");
 
 
@@ -1254,6 +1314,11 @@ $(document).ready(function() {
 				$("#verifyRsData").removeClass("hidden");
 				$("#verifyRsDataMultisig").removeClass('hidden');
 				$(".verifyLink").attr('href','?verify='+$("#verifyScript").val());
+				return true;
+			} else if(decode.type == "segwit__"){
+				$("#verifyRsData").removeClass("hidden");
+				$("#verifyRsDataSegWit .segWitAddress").val(decode['address']);
+				$("#verifyRsDataSegWit").removeClass('hidden');
 				return true;
 			} else if(decode.type == "hodl__") {
 				var d = $("#verifyRsDataHodl .date").data("DateTimePicker");
@@ -1276,6 +1341,11 @@ $(document).ready(function() {
 			$("#verifyTransactionData .transactionVersion").html(decode['version']);
 			$("#verifyTransactionData .transactionSize").html(decode.size()+' <i>bytes</i>');
 			$("#verifyTransactionData .transactionLockTime").html(decode['lock_time']);
+			$("#verifyTransactionData .transactionRBF").hide();
+			$("#verifyTransactionData .transactionSegWit").hide();
+			if (decode.witness.length>=1) {
+				$("#verifyTransactionData .transactionSegWit").show();
+			}
 			$("#verifyTransactionData").removeClass("hidden");
 			$("#verifyTransactionData tbody").html("");
 
@@ -1302,6 +1372,10 @@ $(document).ready(function() {
 				h += '</td>';
 				h += '</tr>';
 
+				//debug
+				if(parseInt(o.sequence)<(0xFFFFFFFF-1)){
+					$("#verifyTransactionData .transactionRBF").show();
+				}
 			});
 
 			$(h).appendTo("#verifyTransactionData .ins tbody");
@@ -1387,6 +1461,13 @@ $(document).ready(function() {
 			try {
 				$("#verifyPubKey .verifyDataSw").addClass('hidden');
 				$("#verifyPubKey .address").val(coinjs.pubkey2address(pubkey));
+				if(pubkey.length == 66){
+					var sw = coinjs.segwitAddress(pubkey);
+					$("#verifyPubKey .addressSegWit").val(sw.address);
+					$("#verifyPubKey .addressSegWitRedeemScript").val(sw.redeemscript);
+
+					$("#verifyPubKey .verifyDataSw").removeClass('hidden');
+				}
 				$("#verifyPubKey").removeClass("hidden");
 				$(".verifyLink").attr('href','?verify='+$("#verifyScript").val());
 				return true;
@@ -1712,6 +1793,21 @@ $(document).ready(function() {
 		mathFees();
 	});
 
+	$("#fees .txi_segwit").on('input', function(){
+		var inputno = $('.'+$(this).attr('rel')+' .inputno',$("#fees .txinputs")).html();
+		var bytes = 0;
+		if(inputno >= 1){
+			bytes = 2;
+			bytes += (inputno*32);
+			bytes += (inputno*$("#est_txi_segwit").val());
+			bytes += (inputno*(41))
+		}
+
+		bytes = bytes.toFixed(0);
+		$('.'+$(this).attr('rel')+' .bytes',$("#fees .txinputs")).html(bytes);
+		mathFees();
+	});
+
 	$("#fees .txi_multisig").on('input', function(){
 		var inputno = $('.'+$(this).attr('rel')+' .inputno',$("#fees .txinputs")).html();
 		$('.'+$(this).attr('rel')+' .bytes',$("#fees .txinputs")).html((inputno*$("#est_txi_multisig").val())+(inputno*41));
@@ -1772,7 +1868,21 @@ $(document).ready(function() {
 		for(var i = 0; i < deserialized.ins.length; i++){
 			var script = deserialized.extractScriptKey(i);
 			var size = 41;
-			if(script.type == 'multisig'){
+			if(script.type == 'segwit'){
+				if(deserialized.witness[i]){
+					size += deserialized.ins[i].script.buffer.length / 2;
+					for(w in deserialized.witness[i]){
+						size += (deserialized.witness[i][w].length / 2) /4;
+					}
+				} else {
+					size += $("#est_txi_segwit").val()*1;
+				}
+				size = size.toFixed(0);
+				$("#fees .segwit .inputno").html(($("#fees .segwit .inputno").html()*1)+1);
+				$("#fees .txi_segwit").val(($("#fees .txi_segwit").val()*1)+1);
+				$("#fees .segwit .bytes").html(size);
+							
+			} else if(script.type == 'multisig'){
 				var s = coinjs.script();
 				var rs = s.decodeRedeemScript(script.script);
 				size += 4 + ((script.script.length / 2) + (73 * rs.signaturesRequired));

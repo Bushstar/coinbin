@@ -111,7 +111,6 @@ $(document).ready(function() {
 	$("#walletToSegWit").click(function(){
 		$("#walletToBtn").html('SegWit <span class="caret"></span>');
 		$("#walletSegwit")[0].checked = true;
-		$("#walletSegwitp2sh")[0].checked = true;
 		$("#openBtn").click();
 	});
 

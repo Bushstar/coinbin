@@ -965,15 +965,18 @@ $(document).ready(function() {
 			$("#inputs .txIdN:last").val(n);
 			$("#inputs .txIdAmount:last").val(amount);
 
-			if(((script.match(/^00/) && script.length==44)) || (script.length==40 && script.match(/^[a-f0-9]+$/gi))){
-				s = coinjs.script();
-				s.writeBytes(Crypto.util.hexToBytes(script));
-				s.writeOp(0);
-				s.writeBytes(coinjs.numToBytes((amount*100000000).toFixed(0), 8));
-				script = Crypto.util.bytesToHex(s.buffer);
-			}
+			if(typeof script != 'undefined')
+			{
+				if(((script.match(/^00/) && script.length==44)) || (script.length==40 && script.match(/^[a-f0-9]+$/gi))){
+					s = coinjs.script();
+					s.writeBytes(Crypto.util.hexToBytes(script));
+					s.writeOp(0);
+					s.writeBytes(coinjs.numToBytes((amount*100000000).toFixed(0), 8));
+					script = Crypto.util.bytesToHex(s.buffer);
+				}
 
-			$("#inputs .txIdScript:last").val(script);
+				("#inputs .txIdScript:last").val(script);
+			}
 		}
 	}
 
@@ -1699,7 +1702,7 @@ $(document).ready(function() {
 
 	$('a[data-toggle="tab"]').on('click', function(e) {
 		e.preventDefault();
-		if(e.target){
+		if( (e.target) && (typeof $(e.target).attr('href') !='undefined')){ 
 			history.pushState(null, null, '#'+$(e.target).attr('href').substr(1));
 		}
 	});

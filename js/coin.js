@@ -1048,7 +1048,8 @@
 						s = coinjs.script();
 						s.writeBytes(Crypto.util.hexToBytes(script));
 						s.writeOp(0);
-						s.writeBytes(coinjs.numToBytes(u.getElementsByTagName("value")[0].childNodes[0].nodeValue*1, 8));
+						s.writeBytes(coinjs.numToBytes(unspent[i].value*1, 8)); // we are not using xmlDoc, so there are no childNodes any more (as in original code below)
+						//s.writeBytes(coinjs.numToBytes(u.getElementsByTagName("value")[0].childNodes[0].nodeValue*1, 8));
 						scr = Crypto.util.bytesToHex(s.buffer);
 					}
 

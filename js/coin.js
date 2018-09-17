@@ -1080,7 +1080,7 @@
 			var tx = txhex || this.serialize();
 			$.ajax ({
 				type: "POST",
-	            url: 'https://wallet.ufocoin.net/proxyAjax.php?module=sendrawtransaction&key='+coinjs.key,
+	            url: '/proxyAjax.php?module=sendrawtransaction&key='+coinjs.key,
 				data: {'rawtx':tx},
 				dataType: "text",
 				error: function(data) {

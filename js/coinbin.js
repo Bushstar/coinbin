@@ -1173,7 +1173,7 @@ $(document).ready(function() {
 		$(thisbtn).val('Please wait, loading...').attr('disabled',true);
 		$.ajax ({
 			type: "POST",
-            url: 'https://wallet.ufocoin.net/proxyAjax.php?module=sendrawtransaction&key='+coinjs.key,
+            url: '/proxyAjax.php?module=sendrawtransaction&key='+coinjs.key,
 			data: {'rawtx':$("#rawTransaction").val()},
 			dataType: "json",
 			error: function(data) {

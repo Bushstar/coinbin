@@ -1020,7 +1020,14 @@
 
 		/* list unspent transactions */
 		r.listUnspent = function(address, callback) {
-			coinjs.ajax("/proxyAjax.php?url=https%3A%2F%2Fchainz.cryptoid.info%2Fufo%2Fapi.dws%3Fq%3Dunspent%26active%3D"+address, callback, "GET");
+			switch(generalSettings.explorerType){
+				case 0:			
+					coinjs.ajax("/proxyAjax.php?url=https%3A%2F%2Fchainz.cryptoid.info%2Fufo%2Fapi.dws%3Fq%3Dunspent%26active%3D"+address, callback, "GET");
+				break;
+				case 1:	
+					coinjs.ajax(generalSettings.api[1] + "/addr/" + address + "/utxo", callback, "GET");
+				break;
+			}
 		}
 
 		/* add unspent to transaction */
@@ -1033,13 +1040,34 @@
 				var total = 0;
 				var x = {};
 
-				var unspent = JSON.parse(data).unspent_outputs;
+				switch(generalSettings.explorerType){
+					case 0:
+						var unspent = JSON.parse(data).unspent_outputs;
+					break;
+					case 1:
+						var unspent = JSON.parse(data);
+					break;
+				}
+
 
 				for(i=0;i<=unspent.length-1;i++){
-					var txhash = unspent[i].tx_hash,
-						n = unspent[i].tx_ouput_n,
-						scr = unspent[i].script,
-						seq = sequence || false;
+
+					switch(generalSettings.explorerType){
+						case 0:
+							var txhash = unspent[i].tx_hash,
+								n = unspent[i].tx_ouput_n,
+								scr = unspent[i].script,
+								seq = sequence || false;
+						break;
+						case 1:
+							var txhash = unspent[i].txid,
+								n = unspent[i].vout,
+								scr = unspent[i].scriptPubKey,
+								seq = sequence || false;
+							unspent[i].value = unspent[i].satoshis;
+						break;
+					}					
+
 
 					if(segwit){
 						/* this is a small hack to include the value with the redeemscript to make the signing procedure smoother. 

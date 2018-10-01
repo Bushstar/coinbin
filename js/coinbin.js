@@ -304,20 +304,42 @@ $(document).ready(function() {
 	function walletBalance() {
 		$("#walletLoader").removeClass("hidden");
         var address = $("#walletAddress").html();
-		$.ajax ({
-			type: "GET",
-			url: "/proxyAjax.php?url=https%3A%2F%2Fchainz.cryptoid.info%2Fufo%2Fapi.dws%3Fq%3Dgetbalance%26a%3D"+address,
-			dataType: "json",
-			error: function() {},
-			complete: function(data, status) {
-                if (!isNaN(data.responseText))
-                    $("#walletBalance").html(data.responseText+" UFO"); 
-                else
-                    $("#walletBalance").html("0.00 UFO"); 
-				$("#walletLoader").addClass("hidden");
-                console.log(data);
-			}
-		});
+
+        switch(generalSettings.explorerType) {
+        	case 0:
+				$.ajax ({
+					type: "GET",
+					url: "/proxyAjax.php?url=https%3A%2F%2Fchainz.cryptoid.info%2Fufo%2Fapi.dws%3Fq%3Dgetbalance%26a%3D"+address,
+					dataType: "json",
+					error: function() {},
+					complete: function(data, status) {
+		                if (!isNaN(data.responseText))
+		                    $("#walletBalance").html(data.responseText+" UFO"); 
+		                else
+		                    $("#walletBalance").html("0.00 UFO"); 
+						$("#walletLoader").addClass("hidden");
+		                //console.log(data);
+					}
+				});
+        	break;
+        	case 1:
+				$.ajax ({
+					type: "GET",
+					url: generalSettings.api[1] + "/addr/"+address+"/balance",
+					dataType: "json",
+					error: function() {},
+					complete: function(data, status) {
+		                if (!isNaN(data.responseText))
+		                    $("#walletBalance").html( (data.responseText/100000000) +" UFO"); 
+		                else
+		                    $("#walletBalance").html("0.00 UFO"); 
+						$("#walletLoader").addClass("hidden");
+		                //console.log(data);
+					}
+				});        	
+        	break;
+        }
+
 	}
 
 	function checkBalanceLoop(){
@@ -1039,39 +1061,78 @@ $(document).ready(function() {
 
 	/* retrieve unspent data from chain.so for U */
 	function listUnspentCryptoidinfo_UFO(redeem) {
+        switch(generalSettings.explorerType) {
+        	case 0:
 		
-		$.ajax ({
-			type: "GET",
-			url: "/proxyAjax.php?url=https%3A%2F%2Fchainz.cryptoid.info%2Fufo%2Fapi.dws%3Fq%3Dunspent%26active%3D"+redeem.addr,
-			dataType: "json",
-			error: function() {
-				$("#redeemFromStatus").removeClass('hidden').html('<span class="glyphicon glyphicon-exclamation-sign"></span> Unable to retrieve unspent outputs!');
-			},
-			success: function(data) {
-				if(data.unspent_outputs){
-					$("#redeemFromAddress").removeClass('hidden').html(
-						'<span class="glyphicon glyphicon-info-sign"></span> Retrieved unspent inputs from address <a href="'+explorer_addr+redeem.addr+'" target="_blank">'+redeem.addr+'</a>');
+				$.ajax ({
+					type: "GET",
+					url: "/proxyAjax.php?url=https%3A%2F%2Fchainz.cryptoid.info%2Fufo%2Fapi.dws%3Fq%3Dunspent%26active%3D"+redeem.addr,
+					dataType: "json",
+					error: function() {
+						$("#redeemFromStatus").removeClass('hidden').html('<span class="glyphicon glyphicon-exclamation-sign"></span> Unable to retrieve unspent outputs!');
+					},
+					success: function(data) {
+						if(data.unspent_outputs){
+							$("#redeemFromAddress").removeClass('hidden').html(
+								'<span class="glyphicon glyphicon-info-sign"></span> Retrieved unspent inputs from address <a href="'+explorer_addr+redeem.addr+'" target="_blank">'+redeem.addr+'</a>');
 
-					for(var i in data.unspent_outputs){
-						var o = data.unspent_outputs[i];
-						var tx = ((""+o.tx_hash).match(/.{1,2}/g).reverse()).join("")+'';
-						if(tx.match(/^[a-f0-9]+$/)){
-							var n = o.tx_ouput_n;
-                                                        var script = (redeem.redeemscript==true) ? redeem.decodedRs : o.script_hex;
-							var amount = (o.value/100000000).toFixed(8);
-							addOutput(tx, n, script, amount);
+							for(var i in data.unspent_outputs){
+								var o = data.unspent_outputs[i];
+								var tx = ((""+o.tx_hash).match(/.{1,2}/g).reverse()).join("")+'';
+								if(tx.match(/^[a-f0-9]+$/)){
+									var n = o.tx_ouput_n;
+		                                                        var script = (redeem.redeemscript==true) ? redeem.decodedRs : o.script_hex;
+									var amount = (o.value/100000000).toFixed(8);
+									addOutput(tx, n, script, amount);
+								}
+							}
+						} else {
+							$("#redeemFromStatus").removeClass('hidden').html('<span class="glyphicon glyphicon-exclamation-sign"></span> Unexpected error, unable to retrieve unspent outputs.');
 						}
+					},
+					complete: function(data, status) {
+						$("#redeemFromBtn").html("Load").attr('disabled',false);
+						totalInputAmount();
 					}
-				} else {
-					$("#redeemFromStatus").removeClass('hidden').html('<span class="glyphicon glyphicon-exclamation-sign"></span> Unexpected error, unable to retrieve unspent outputs.');
-				}
-			},
-			complete: function(data, status) {
-				$("#redeemFromBtn").html("Load").attr('disabled',false);
-				totalInputAmount();
-			}
-		});
+				});
+			
+			break;
+			case 1:
 
+				$.ajax ({
+					type: "GET",
+					url: generalSettings.api[1] + "/addr/" + redeem.addr + "/utxo",
+					dataType: "json",
+					error: function() {
+						$("#redeemFromStatus").removeClass('hidden').html('<span class="glyphicon glyphicon-exclamation-sign"></span> Unable to retrieve unspent outputs!');
+					},
+					success: function(data) {
+						if(data){
+							$("#redeemFromAddress").removeClass('hidden').html(
+								'<span class="glyphicon glyphicon-info-sign"></span> Retrieved unspent inputs from address <a href="'+explorer_addr+redeem.addr+'" target="_blank">'+redeem.addr+'</a>');
+
+							for(var i in data){
+								var o = data[i];
+								var tx = ((""+o.txid).match(/.{1,2}/g).reverse()).join("")+'';
+								if(tx.match(/^[a-f0-9]+$/)){
+									var n = o.vout;
+		                            var script = (redeem.redeemscript==true) ? redeem.decodedRs : o.scriptPubKey;
+									var amount = (o.value/100000000).toFixed(8);
+									addOutput(tx, n, script, amount);
+								}
+							}
+						} else {
+							$("#redeemFromStatus").removeClass('hidden').html('<span class="glyphicon glyphicon-exclamation-sign"></span> Unexpected error, unable to retrieve unspent outputs.');
+						}
+					},
+					complete: function(data, status) {
+						$("#redeemFromBtn").html("Load").attr('disabled',false);
+						totalInputAmount();
+					}
+				});
+
+			break;
+		}
 	}
 
 	/* retrieve unspent data from chain.so for dogecoin */

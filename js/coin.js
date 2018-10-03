@@ -1106,18 +1106,37 @@
 		/* broadcast a transaction */
 		r.broadcast = function(callback, txhex){
 			var tx = txhex || this.serialize();
-			$.ajax ({
-				type: "POST",
-	            url: '/proxyAjax.php?module=sendrawtransaction&key='+coinjs.key,
-				data: {'rawtx':tx},
-				dataType: "text",
-				error: function(data) {
-					callback({'result': "0", 'error': data.statusText});
-				},
-				complete: function(data, status) {
-					callback({'result': "1", 'txid': data.responseText});
-				}
-			});			
+			switch(generalSettings.explorerType){
+				case 0:
+					$.ajax ({
+						type: "POST",
+			            url: '/proxyAjax.php?module=sendrawtransaction&key='+coinjs.key,
+						data: {'rawtx':tx},
+						dataType: "text",
+						error: function(data) {
+							callback({'result': "0", 'error': data.statusText});
+						},
+						complete: function(data, status) {
+							callback({'result': "1", 'txid': data.responseText});
+						}
+					});
+				break;
+				case 1:					
+					$.ajax ({
+						type: "POST",
+			            url: generalSettings.api[1] + "/tx/send",
+						data: {'rawtx':tx},
+						dataType: "text",
+						error: function(data) {
+							callback({'result': "0", 'error': data.statusText});
+						},
+						complete: function(data, status) {
+							callback({'result': "1", 'txid': data.responseText});
+						}
+					});				
+				break;
+			}		
+			
 		}
 
 		/* generate the transaction hash to sign from a transaction input */

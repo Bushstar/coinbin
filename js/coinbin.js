@@ -1232,6 +1232,7 @@ $(document).ready(function() {
 	function rawSubmitDefault(btn){
 		var thisbtn = btn;
 		$(thisbtn).val('Please wait, loading...').attr('disabled',true);
+		console.log('rawSubmitDefault');		
 		$.ajax ({
 			type: "POST",
             url: '/proxyAjax.php?module=sendrawtransaction&key='+coinjs.key,
@@ -1257,6 +1258,7 @@ $(document).ready(function() {
 	// broadcast transaction via cryptoid
 	function rawSubmitcryptoid_UFO(thisbtn) {
 		$(thisbtn).val('Please wait, loading...').attr('disabled',true);
+		console.log('rawSubmitcryptoid_UFO');
 		$.ajax ({
 			type: "POST",
 			url: coinjs.host+'?uid='+coinjs.uid+'&key='+coinjs.key+'&setmodule=ufo&request=sendrawtransaction',

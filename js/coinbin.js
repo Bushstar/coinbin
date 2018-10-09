@@ -2,6 +2,9 @@ $(document).ready(function() {
 
 	/* open wallet code */
 
+	//version
+	$("#version").text('ver.1.2.2');
+
 	var explorer_tx = "https://coinb.in/tx/"
 	var explorer_addr = "https://chainz.cryptoid.info/ufo/address.dws?"
 	var explorer_block = "https://coinb.in/block/"
@@ -1232,33 +1235,62 @@ $(document).ready(function() {
 	function rawSubmitDefault(btn){
 		var thisbtn = btn;
 		$(thisbtn).val('Please wait, loading...').attr('disabled',true);
-		console.log('rawSubmitDefault');		
-		$.ajax ({
-			type: "POST",
-            url: '/proxyAjax.php?module=sendrawtransaction&key='+coinjs.key,
-			data: {'rawtx':$("#rawTransaction").val()},
-			dataType: "json",
-			error: function(data) {
-				$("#rawTransactionStatus").addClass('alert-danger').removeClass('alert-success').removeClass("hidden").html(" There was an error submitting your request, please try again").prepend('<span class="glyphicon glyphicon-exclamation-sign"></span>');
-			},
-			complete: function(data, status) {
-                if ("responseText" in data) {
-                    var resp = data.responseText;
-                    if (resp.toLowerCase().indexOf("fatal error") < 0 && data.responseText != 0) {
-                        $("#rawTransactionStatus").addClass('alert-success').removeClass('alert-danger');
-                        $("#rawTransactionStatus").html('txid: '+resp);
-                    }
-                }
-				$("#rawTransactionStatus").fadeOut().fadeIn();
-				$(thisbtn).val('Submit').attr('disabled',false);
-			}
-		});
+
+
+		switch(generalSettings.explorerType){
+			case 0:
+
+				$.ajax ({
+					type: "POST",
+		            url: '/proxyAjax.php?module=sendrawtransaction&key='+coinjs.key,
+					data: {'rawtx':$("#rawTransaction").val()},
+					dataType: "json",
+					error: function(data) {
+						$("#rawTransactionStatus").addClass('alert-danger').removeClass('alert-success').removeClass("hidden").html(" There was an error submitting your request, please try again").prepend('<span class="glyphicon glyphicon-exclamation-sign"></span>');
+					},
+					complete: function(data, status) {
+		                if ("responseText" in data) {
+		                    var resp = data.responseText;
+		                    if (resp.toLowerCase().indexOf("fatal error") < 0 && data.responseText != 0) {
+		                        $("#rawTransactionStatus").addClass('alert-success').removeClass('alert-danger');
+		                        $("#rawTransactionStatus").html('txid: '+resp);
+		                    }
+		                }
+						$("#rawTransactionStatus").fadeOut().fadeIn();
+						$(thisbtn).val('Submit').attr('disabled',false);
+					}
+				});
+
+			break;
+			case 1:					
+				$.ajax ({
+					type: "POST",
+		            url: generalSettings.api[1] + "/tx/send",
+					data: {'rawtx':$("#rawTransaction").val()},
+					dataType: "json",
+					error: function(data) {
+						$("#rawTransactionStatus").addClass('alert-danger').removeClass('alert-success').removeClass("hidden").html(" There was an error submitting your request, please try again").prepend('<span class="glyphicon glyphicon-exclamation-sign"></span>');
+					},
+					complete: function(data, status) {
+		                if ("responseText" in data) {
+		                    var resp = data.responseText;
+		                    if (resp.toLowerCase().indexOf("fatal error") < 0 && data.responseText != 0) {
+		                        $("#rawTransactionStatus").addClass('alert-success').removeClass('alert-danger');
+		                        $("#rawTransactionStatus").html('txid: '+resp);
+		                    }
+		                }
+						$("#rawTransactionStatus").fadeOut().fadeIn();
+						$(thisbtn).val('Submit').attr('disabled',false);						
+					}
+				});				
+			break;
+		}		
+
 	}
 
 	// broadcast transaction via cryptoid
 	function rawSubmitcryptoid_UFO(thisbtn) {
 		$(thisbtn).val('Please wait, loading...').attr('disabled',true);
-		console.log('rawSubmitcryptoid_UFO');
 		$.ajax ({
 			type: "POST",
 			url: coinjs.host+'?uid='+coinjs.uid+'&key='+coinjs.key+'&setmodule=ufo&request=sendrawtransaction',

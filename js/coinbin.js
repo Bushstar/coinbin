@@ -889,7 +889,6 @@ $(document).ready(function() {
 
 		var host = $(this).attr('rel');
 
-
 		listUnspentCryptoidinfo_UFO(redeem);
 
 		if($("#redeemFromStatus").hasClass("hidden")) {
@@ -1000,7 +999,7 @@ $(document).ready(function() {
 					script = Crypto.util.bytesToHex(s.buffer);
 				}
 
-				("#inputs .txIdScript:last").val(script);
+				$("#inputs .txIdScript:last").val(script);
 			}
 		}
 	}

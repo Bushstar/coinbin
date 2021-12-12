@@ -871,15 +871,19 @@ $(document).ready(function() {
 
 		$("#redeemFromStatus, #redeemFromAddress").addClass('hidden');
 
+		
 		if(redeem.from=='multisigAddress'){
-			$("#redeemFromStatus").removeClass('hidden').html('<span class="glyphicon glyphicon-exclamation-sign"></span> You should use the redeem script, not the multisig address!');
-			return false;
+
+			redeem.addr = $("#redeemFrom").val();
+			//$("#redeemFromStatus").removeClass('hidden').html('<span class="glyphicon glyphicon-exclamation-sign"></span> You should use the redeem script, not the multisig address!');
+			//return false;
 		}
 
 		if(redeem.from=='other'){
 			$("#redeemFromStatus").removeClass('hidden').html('<span class="glyphicon glyphicon-exclamation-sign"></span> The address or redeem script you have entered is invalid');
 			return false;
 		}
+	
 
 		if($("#clearInputsOnLoad").is(":checked")){
 			$("#inputs .txidRemove, #inputs .txidClear").click();
@@ -888,6 +892,8 @@ $(document).ready(function() {
 		$("#redeemFromBtn").html("Please wait, loading...").attr('disabled',true);
 
 		var host = $(this).attr('rel');
+
+		
 
 		listUnspentCryptoidinfo_UFO(redeem);
 
@@ -1115,11 +1121,18 @@ $(document).ready(function() {
 
 							for(var i in data){
 								var o = data[i];
+
 								var tx = ((""+o.txid).match(/.{1,2}/g).reverse()).join("")+'';
 								if(tx.match(/^[a-f0-9]+$/)){
 									var n = o.vout;
 		                            var script = (redeem.redeemscript==true) ? redeem.decodedRs : o.scriptPubKey;
-									var amount = (o.value/100000000).toFixed(8);
+
+									var amount = 0;
+									if(typeof o.value != 'undefined')
+										var amount = (o.value/100000000).toFixed(8);
+									else if(typeof o.satoshis != 'undefined') 
+										var amount = (o.satoshis/100000000).toFixed(8);
+
 									addOutput(tx, n, script, amount);
 								}
 							}

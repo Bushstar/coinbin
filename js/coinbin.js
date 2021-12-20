@@ -893,7 +893,6 @@ $(document).ready(function() {
 
 		var host = $(this).attr('rel');
 
-		
 
 		listUnspentCryptoidinfo_UFO(redeem);
 
@@ -935,7 +934,8 @@ $(document).ready(function() {
 			if(decodeRs){ // redeem script
 				r.addr = decodeRs['address'];
 				r.from = 'redeemScript';
-				r.decodedRs = decodeRs.redeemscript;
+				//r.decodedRs = decodeRs.redeemscript;
+				r.decodedRs = decodeRs;
 				r.redeemscript = true;
 			} else { // something else
 				r.addr = '';
@@ -1125,8 +1125,20 @@ $(document).ready(function() {
 								var tx = ((""+o.txid).match(/.{1,2}/g).reverse()).join("")+'';
 								if(tx.match(/^[a-f0-9]+$/)){
 									var n = o.vout;
-		                            var script = (redeem.redeemscript==true) ? redeem.decodedRs : o.scriptPubKey;
-
+									
+									var script;
+									if(redeem.redeemscript!=true)
+									{
+										script = o.scriptPubKey;
+									}
+									else if(redeem.redeemscript==true && typeof(redeem.decodedRs.script)!='undefined')
+									{
+										script = redeem.decodedRs.script;
+									}
+									else
+									{
+										script = redeem.decodedRs;
+									}
 									var amount = 0;
 									if(typeof o.value != 'undefined')
 										var amount = (o.value/100000000).toFixed(8);

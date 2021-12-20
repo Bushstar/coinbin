@@ -855,6 +855,8 @@
 					r.checklocktimeverify = coinjs.bytesToNum(s.chunks[0].slice());
 					r.address = coinjs.simpleHodlAddress(r.pubkey, r.checklocktimeverify).address;
 					r.type = "hodl__";
+					var rs = Crypto.util.bytesToHex(s.buffer);
+					r.script = rs;
 				}
 			} catch(e) {
 				// console.log(e);

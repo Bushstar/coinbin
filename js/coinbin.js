@@ -1276,7 +1276,7 @@ $(document).ready(function() {
 		                if ("responseText" in data) {
 		                    var resp = data.responseText;
 		                    if (resp.toLowerCase().indexOf("fatal error") < 0 && data.responseText != 0) {
-		                        $("#rawTransactionStatus").addClass('alert-success').removeClass('alert-danger');
+		                        $("#rawTransactionStatus").removeClass('hidden').addClass('alert-success').removeClass('alert-danger');
 		                        $("#rawTransactionStatus").html('txid: '+resp);
 		                    }
 		                }
@@ -1299,7 +1299,7 @@ $(document).ready(function() {
 		                if ("responseText" in data) {
 		                    var resp = data.responseText;
 		                    if (resp.toLowerCase().indexOf("fatal error") < 0 && data.responseText != 0) {
-		                        $("#rawTransactionStatus").addClass('alert-success').removeClass('alert-danger');
+		                        $("#rawTransactionStatus").removeClass('hidden').addClass('alert-success').removeClass('alert-danger');
 		                        $("#rawTransactionStatus").html('txid: '+resp);
 		                    }
 		                }
